@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<!--
+    Document   : jearllogger.xml.xml
+    Created on : February 2, 2012, 11:41 PM
+    Author     : can
+    Description:
+        Purpose of the document follows.
+-->
+
+<log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/' debug="false">
+    <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+        <param name="Threshold" value="INFO" />   
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %-5p  [%c{1}] %m %n" />
+        </layout>
+    </appender>
+
+    <appender name="FILE" class="org.apache.log4j.RollingFileAppender">
+        <param name="Threshold" value="OFF" />
+        <param name="File" value="sample.log"/>
+        <param name="MaxFileSize" value="100KB"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %-5p  [%c{1}] %m %n" />
+        </layout>
+    </appender>
+    <appender name="DB" class="org.apache.log4j.jdbc.JDBCAppender">
+        <param name="Threshold" value="DEBUG" />
+        <param name="driver" value="org.postgresql.Driver" />
+        <param name="user" value="postgres"/>
+        <param name="password" value="1234"/>
+        <param name="URL" value="jdbc:postgresql://localhost:5432/ITIL_DBase"/>
+        <param name="sql" value="INSERT INTO log_transaction( lgcat_id, lg_app , lgtrn_userid, lgtrn_logdate, lgtrn_loglevel,lgtrn_location, lgtrn_locline, lgtrn_message, lgtrn_temp, lgtrn_function) 
+      VALUES ('%X{category}','%X{application}','%X{user}' ,  '%d{yyyy-MM-dd  HH:mm:ss.SSS}', '%p','%c.java', '%c{1}.java:%L', '%m', '%X{temp}', '%t')"/>
+        <layout class="org.apache.log4j.PatternLayout">
+        </layout>
+    </appender>
+
+    <logger name="org.jearl.log" additivity="false" >   
+        <level value="INFO" />
+        <appender-ref ref="DB"/>      
+        <appender-ref ref="FILE"/>      
+        <appender-ref ref="CONSOLE"/>      
+    </logger>
+</log4j:configuration>
